@@ -1,5 +1,11 @@
 rootProject.name = "CombatLogX"
 
+includeBuild("../BlueSlimeCore") {
+    dependencySubstitution {
+        substitute(module("com.github.sirblobman.api:core")).using(project(":core"))
+    }
+}
+
 // CombatLogX API
 include("api")
 
@@ -46,9 +52,7 @@ include("expansion:compatibility:CMI")
 include("expansion:compatibility:CrackShot")
 include("expansion:compatibility:CrashClaim")
 include("expansion:compatibility:EssentialsX")
-include("expansion:compatibility:FabledSkyBlock")
 include("expansion:compatibility:Factions")
-include("expansion:compatibility:FeatherBoard")
 include("expansion:compatibility:GriefDefender")
 include("expansion:compatibility:GriefPrevention")
 include("expansion:compatibility:HuskHomes")
@@ -79,6 +83,11 @@ include("expansion:compatibility:VanishGeneric")
 include("expansion:compatibility:VanishNoPacket")
 include("expansion:compatibility:WorldGuard")
 // include("expansion:compatibility:ZNPCsPlus")
+
+if (!providers.gradleProperty("skipPrivateDependencies").isPresent) {
+    include("expansion:compatibility:FabledSkyBlock")
+    include("expansion:compatibility:FeatherBoard")
+}
 
 // Final ZIP Builder
 include("builder")

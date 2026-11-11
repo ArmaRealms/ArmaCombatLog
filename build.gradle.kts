@@ -1,14 +1,19 @@
 val baseVersion = providers.gradleProperty("version.base").get()
 val betaVersion = providers.gradleProperty("version.beta").get().toBooleanStrict()
-val betaString = if (betaVersion) "Beta-" else ""
-val jenkinsBuild = providers.environmentVariable("BUILD_NUMBER").orElse("Unofficial").get()
-rootProject.version = "${baseVersion}.${betaString}${jenkinsBuild}"
+val buildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.takeIf { it.isNotBlank() }
+val releaseVersion = if (betaVersion) "$baseVersion.Beta" else baseVersion
+val buildSeparator = if (betaVersion) "-" else "."
+rootProject.version = buildNumber?.let { "$releaseVersion$buildSeparator$it" } ?: releaseVersion
 
 plugins {
     id("java")
 }
 
+val paperVersion = providers.gradleProperty("version.paper").get()
+val paperProjects = setOf(":plugin", ":expansion:scoreboard", ":expansion:cheat-prevention:paper")
+
 subprojects {
+    val usesPaper = path in paperProjects
     apply {
         plugin("java")
     }
@@ -16,25 +21,36 @@ subprojects {
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-        toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+        if (usesPaper) {
+            disableAutoTargetJvm()
+        }
+        toolchain.languageVersion.set(JavaLanguageVersion.of(25))
     }
 
     repositories {
-        maven("https://nexus.sirblobman.xyz/central-mirror/") // Central Mirror
+        mavenCentral()
+        if (usesPaper) {
+            maven("https://repo.papermc.io/repository/maven-public/")
+        }
         maven("https://repo.aikar.co/nexus/content/groups/aikar/") // Aikar Repository
         maven("https://nexus.sirblobman.xyz/public/") // SirBlobman Public Repository
     }
 
     dependencies {
         compileOnly("org.jetbrains:annotations:26.1.0") // JetBrains Annotations
-        compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT") // BlueSlimeCore
-        compileOnly("org.spigotmc:spigot-api") // Spigot API
+        compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT") {
+            isTransitive = false
+        }
 
-        // Spigot API
-        constraints {
-            compileOnly("org.spigotmc:spigot-api") {
-                version {
-                    prefer("1.19.4-R0.1-SNAPSHOT")
+        if (usesPaper) {
+            compileOnly("io.papermc.paper:paper-api:$paperVersion")
+        } else {
+            compileOnly("org.spigotmc:spigot-api")
+            constraints {
+                compileOnly("org.spigotmc:spigot-api") {
+                    version {
+                        prefer("1.19.4-R0.1-SNAPSHOT")
+                    }
                 }
             }
         }

@@ -52,9 +52,9 @@ val pluginSoftDepend = listOf(
 
 plugins {
     id("maven-publish")
-    id("com.gradleup.shadow") version "9.3.2"
-    id("de.eldoria.plugin-yml.bukkit") version "0.8.0"
-    id("de.eldoria.plugin-yml.paper") version "0.8.0"
+    id("com.gradleup.shadow") version "9.6.1"
+    id("de.eldoria.plugin-yml.bukkit") version "0.9.0"
+    id("de.eldoria.plugin-yml.paper") version "0.9.0"
 }
 
 bukkit {
@@ -183,7 +183,7 @@ paper {
 
     main = "com.github.sirblobman.combatlogx.CombatPlugin"
     version = pluginVersion
-    apiVersion = "1.19"
+    apiVersion = "26.2"
     load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
 
     hasOpenClassloader = true
@@ -192,6 +192,8 @@ paper {
 
     dependencies {
         pluginDepend.forEach { it -> quickRegister(serverDependencies, it, true) }
+        quickRegister(serverDependencies, "Essentials", false)
+        quickRegister(serverDependencies, "MarriageMaster", false)
     }
 
     permissions {
@@ -271,7 +273,7 @@ dependencies {
     implementation(project(":api"))
 
     // Java Dependencies
-    implementation("org.zeroturnaround:zt-zip:1.17") // ZT Zip
+    implementation("org.zeroturnaround:zt-zip:1.18.2") // ZT Zip
 
     // Plugin Dependencies
     compileOnly("me.clip:placeholderapi:2.11.6") // PlaceholderAPI
@@ -284,7 +286,7 @@ tasks {
 
     named<ShadowJar>("shadowJar") {
         archiveClassifier.set(null as String?)
-        archiveFileName.set("CombatLogX.jar")
+        archiveFileName.set("CombatLogX-$pluginVersion.jar")
 
         relocate("org.zeroturnaround.zip", "com.github.sirblobman.combatlogx.zip")
         relocate("org.slf4j", "com.github.sirblobman.combatlogx.zip.slf4j")

@@ -13,9 +13,15 @@ things and change how the plugin works.
 
 ## Requirements
 
-- Java 8
-- [Spigot](https://spigotmc.org/), [Paper](https://papermc.io/download/paper), or [Folia](https://papermc.io/software/folia) 1.8.8-26.1.2
-- [BlueSlimeCore](https://hangar.papermc.io/SirBlobman/BlueSlimeCore) 2.9.9 or higher.
+- Java 25
+- [Paper](https://papermc.io/download/paper) 26.2
+- The BlueSlimeCore JAR bundled in the distribution.
+
+For local builds, check out [ArmaRealms/BlueSlimeCore](https://github.com/ArmaRealms/BlueSlimeCore)
+next to ArmaCombatLog and run `./gradlew build` from ArmaCombatLog.
+Use `./gradlew -PskipPrivateDependencies :builder:distZip` without access to the upstream
+private Maven repository. The distribution bundles the six expansions selected for ArmaRealms Config-Plugins.
+The flag skips the BlueSlimeCore adapters that require upstream private artifacts.
 
 ## Main Features
 
@@ -28,11 +34,11 @@ things and change how the plugin works.
 1. Download the CombatLogX.zip file from Jenkins or SpigotMC.
 2. Extract the contents of the CombatLogX.zip to your PC.
 3. Click the stop button on the panel. If your server doesn't use a panel, type `stop` into the console.
-4. Upload `CombatLogX.jar` and `BlueSlimeCore.jar` to your server `/plugins/` folder.
+4. Upload `CombatLogX-<version>.jar` and `BlueSlimeCore-<version>.jar` to your server `/plugins/` folder.
 5. Upload the contents of `CombatLogX/expansions` to your server `/plugins/CombatLogX/expansions` folder.
 6. If the files were uploaded and extracted correctly, your server should have the following files:
-    - File: /plugins/CombatLogX.jar
-    - File /plugins/BlueSlimeCore.jar
+    - File: /plugins/CombatLogX-<version>.jar
+    - File /plugins/BlueSlimeCore-<version>.jar
     - Folder: /plugins/CombatLogX/
     - Folder: /plugins/CombatLogX/expansions/
     - Multiple Files: /plugins/CombatLogX/expansions/*.jar

@@ -181,8 +181,7 @@ public final class BossBarUpdater implements TimerUpdater {
     }
 
     private Overlay getBossBarOverlay() {
-        int minorVersion = VersionUtility.getMinorVersion();
-        if (minorVersion < 9) {
+        if (!VersionUtility.isAtLeast(1, 9)) {
             return Overlay.PROGRESS;
         }
 
